@@ -4,6 +4,7 @@ import FileUpload from './components/FileUpload';
 import QueryInterface from './components/QueryInterface';
 import ErrorMessage from './components/ErrorMessage';
 import SuccessMessage from './components/SuccessMessage';
+import HealthStatus from './components/HealthStatus';
 import { Brain } from 'lucide-react';
 
 function App() {
@@ -36,7 +37,10 @@ function App() {
               Mini RAG
             </h1>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center space-x-4">
+            <HealthStatus />
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Messages */}

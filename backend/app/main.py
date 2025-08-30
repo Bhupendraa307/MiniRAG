@@ -28,7 +28,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://mini-rag-rosy.vercel.app/"],  # Configure appropriately for production
+    allow_origins=[
+        "http://localhost:3000",
+        "https://mini-rag-rosy.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
