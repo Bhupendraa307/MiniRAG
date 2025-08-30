@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, AlertCircle } from 'lucide-react';
+import { Activity, AlertCircle, RefreshCw } from 'lucide-react';
 import { healthCheck } from '../utils/api';
 
 const HealthStatus = () => {
   const [status, setStatus] = useState('checking');
   const [lastCheck, setLastCheck] = useState(null);
+  const [isChecking, setIsChecking] = useState(false);
 
   const checkHealth = async () => {
+    setIsChecking(true);
+    setStatus('checking');
     try {
       await healthCheck();
       setStatus('healthy');
@@ -14,13 +17,13 @@ const HealthStatus = () => {
     } catch (error) {
       setStatus('error');
       setLastCheck(new Date().toLocaleTimeString());
+    } finally {
+      setIsChecking(false);
     }
   };
 
   useEffect(() => {
     checkHealth();
-    const interval = setInterval(checkHealth, 30000); // Check every 30 seconds
-    return () => clearInterval(interval);
   }, []);
 
   const getStatusColor = () => {
@@ -39,13 +42,25 @@ const HealthStatus = () => {
     }
   };
 
+  const getIcon = () => {
+    if (isChecking) {
+      return <RefreshCw className={`w-4 h-4 ${getStatusColor()} animate-spin`} />;
+    }
+    return status === 'healthy' ? (
+      <Activity className={`w-4 h-4 ${getStatusColor()}`} />
+    ) : (
+      <AlertCircle className={`w-4 h-4 ${getStatusColor()}`} />
+    );
+  };
+
   return (
-    <div className="flex items-center space-x-2 text-sm">
-      {status === 'healthy' ? (
-        <Activity className={`w-4 h-4 ${getStatusColor()}`} />
-      ) : (
-        <AlertCircle className={`w-4 h-4 ${getStatusColor()}`} />
-      )}
+    <button
+      onClick={checkHealth}
+      disabled={isChecking}
+      className="flex items-center space-x-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded-md transition-colors"
+      title="Click to check API health"
+    >
+      {getIcon()}
       <span className={`${getStatusColor()} font-medium`}>
         {getStatusText()}
       </span>
@@ -54,7 +69,7 @@ const HealthStatus = () => {
           {lastCheck}
         </span>
       )}
-    </div>
+    </button>
   );
 };
 
