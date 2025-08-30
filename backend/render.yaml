@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: mini-rag-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: COHERE_API_KEY
+        sync: false
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: PINECONE_ENVIRONMENT
+        sync: false
+      - key: PINECONE_INDEX_NAME
+        value: mini-rag-index
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: mini_rag_db
+      - key: GROQ_API_KEY
+        sync: false
